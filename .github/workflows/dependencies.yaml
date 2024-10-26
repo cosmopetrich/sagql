@@ -19,11 +19,13 @@ jobs:
           #   cache_dir: "$HOME/.cache/vcpkg/archives"
           #   vcpkg: vcpkg
           #   vcpkg_bin: installed/x64-linux/bin
+          # wd: ./vcpkg
           - os: windows-latest
-            bootstrap: bootstrap-vcpkg.ps1
+            bootstrap: .\bootstrap-vcpkg.ps1
             cache_dir: "%LOCALAPPDATA%\vcpkg\archives"
-            vcpkg: vcpkg.exe
+            vcpkg: .\vcpkg.exe
             vcpkg_bin: installed/x64-windows/bin
+            wd: .\vcpkg
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout vcpkg
@@ -42,7 +44,7 @@ jobs:
           key: ${{ runner.os }}-vcpkg
       - name: Bootstrap vcpkg
         run: ${{ matrix.bootstrap }}
-        working-directory: ./vcpkg
+        working-directory: ${{ matrix.wd }}
       - name: Build libraries
         run: ./vcpkg/${{ matrix.vcpkg }} install
       - uses: actions/upload-artifact@v4
