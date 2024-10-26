@@ -81,6 +81,6 @@ jobs:
         if: ${{ matrix.artifacts-schemagen }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.triplet }}-${{ matrix.schemagen }}
-          path: vcpkg/vcpkg_installed/${{ matrix.schemagen-triplet || matrix.triplet }}/tools/cppgraphqlgen/${{ matrix.schemagen }}
+          name: ${{ matrix.triplet }}-${{ matrix.artifacts-schemagen }}
+          path: vcpkg/vcpkg_installed/${{ matrix.schemagen-triplet || matrix.triplet }}/tools/cppgraphqlgen/${{ artifacts-schemagen }}
           if-no-files-found: error
