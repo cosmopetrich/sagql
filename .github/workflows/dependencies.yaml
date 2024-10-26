@@ -50,10 +50,10 @@ jobs:
       - name: Bootstrap vcpkg
         run: bootstrap-vcpkg
         working-directory: vcpkg
-      - run: ls vcpkg/vcpkg_installed/${{matrix.target}}/bin
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.target }}
         working-directory: vcpkg
+      - run: ls vcpkg/vcpkg_installed/${{matrix.target}}/bin
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
