@@ -68,7 +68,7 @@ jobs:
       - name: Upload libraries
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}.zip
+          name: ${{ matrix.target }}-libs.zip
           path: vcpkg/vcpkg_installed/${{ matrix.triplet }}/${{ matrix.artifacts }}
           if-no-files-found: error
       - name: Upload debug libraries
