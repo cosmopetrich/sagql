@@ -15,13 +15,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # target: [x64-linux, x64-windows]
-        target: [x64-windows]
+        target: [x64-linux, x64-windows]
         include:
-          # - target: x64-linux
-          #   os: ubuntu-latest
-          #   vcpkg: vcpkg
-          #   vcpkg_bin: installed/x64-linux/bin
+          - target: x64-linux
+            os: ubuntu-latest
+            vcpkg: vcpkg
+            vcpkg_bin: installed/x64-linux/bin
           - target: x64-windows
             os: windows-latest
             vcpkg: vcpkg.exe
@@ -56,6 +55,7 @@ jobs:
       - run: ls vcpkg/vcpkg_installed/${{matrix.target}}/bin
       - uses: actions/upload-artifact@v4
         with:
+          name: dependencies-${{ matrix.target }}
           if-no-files-found: error
           path: |
             vcpkg/vcpkg_installed/${{ matrix.target }}/bin/graphqlservice*
