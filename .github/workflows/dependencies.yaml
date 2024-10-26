@@ -68,19 +68,19 @@ jobs:
       - name: Upload libraries
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}-libs.zip
+          name: libs-${{ matrix.target }}
           path: vcpkg/vcpkg_installed/${{ matrix.triplet }}/${{ matrix.artifacts }}
           if-no-files-found: error
       - name: Upload debug libraries
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}-debug.zip
+          name: debug-${{ matrix.target }}
           path: vcpkg/vcpkg_installed/${{ matrix.triplet }}/${{ matrix.artifacts }}
           if-no-files-found: error
       - name: Upload schemagen
         if: ${{ matrix.artifacts-schemagen }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}-${{ matrix.artifacts-schemagen }}
+          name: schemagen-${{ matrix.target }}
           path: vcpkg/vcpkg_installed/${{ matrix.schemagen-triplet || matrix.triplet }}/tools/cppgraphqlgen/${{ matrix.artifacts-schemagen }}
           if-no-files-found: error
