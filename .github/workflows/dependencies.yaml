@@ -50,8 +50,7 @@ jobs:
       - name: Bootstrap vcpkg
         run: bootstrap-vcpkg
         working-directory: vcpkg
-      - run: ls vcpkg
-      - run: ls vcpkg/vcpkg_installed/${{matrrix.target}}/bin
+      - run: ls vcpkg/vcpkg_installed/${{matrix.target}}/bin
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.target }}
         working-directory: vcpkg
