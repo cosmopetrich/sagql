@@ -33,20 +33,19 @@ jobs:
         with:
           path: vcpkg
           repository: microsoft/vcpkg
-      - name: Checkout vpckg.json
+      - name: Checkout vcpkg.json
         uses: actions/checkout@v4
         with:
+          path: config
           sparse-checkout: vcpkg.json
       - name: Maintain binary cache
         uses: actions/cache@v4
         with:
           path: ${{ matrix.cache_dir }}
           key: ${{ runner.os }}-vcpkg
-      - run: ls
-      - run: pwd
       - name: Bootstrap vcpkg
         run: ${{ matrix.bootstrap }}
-        working-directory: vpckg
+        working-directory: vcpkg
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install
         working-directory: vcpkg
