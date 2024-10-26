@@ -53,15 +53,15 @@ jobs:
       - run: ls vcpkg
       - run: ls vcpkg/vcpkg_installed/${{matrrix.target}}/bin
       - name: Build libraries
-        run: ${{ matrix.vcpkg }} install --binarysource ../binarysource --triplet ${{ matrix.target }}
+        run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.target }}
         working-directory: vcpkg
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           path: |
-            vcpkg/vcpkg_installed/${{ matrix.target }}/graphqlservice*
-            vcpkg/vcpkg_installed/${{ matrix.target }}/graphqlpeg*
-            vcpkg/vcpkg_installed/${{ matrix.target }}/graphqljson*
-            vcpkg/vcpkg_installed/${{ matrix.target }}/graphqlresponse*
-            vcpkg/vcpkg_installed/${{ matrix.target }}/zlib*
-            vcpkg/vcpkg_installed/${{ matrix.target }}/uv*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/graphqlservice*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/graphqlpeg*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/graphqljson*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/graphqlresponse*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/zlib*
+            vcpkg/vcpkg_installed/${{ matrix.target }}/bin/uv*
