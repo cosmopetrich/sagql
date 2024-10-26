@@ -1,0 +1,43 @@
+name: Build dependencies
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: vcpkg.json
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            bootstrap: bootstrap-vcpkg.ps1
+            cache_dir: "%LOCALAPPDATA%\vcpkg\archives"
+            vcpkg: vcpkg.exe
+          - os: ubuntu-latest
+            bootstrap: bootstrap-vcpkg.sh
+            cache_dir: "$HOME/.cache/vcpkg/archives"
+            vcpkg: vcpkg
+    steps:
+    - name: Checkout vcpkg
+      uses: actions/checkout@v4
+      with:
+        path: vcpkg
+        repository: microsoft/vcpkg
+    - name: Checkout vpckg.json
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: vcpkg.json
+    - name: Maintain binary cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ matrix.cache_dir }}
+        key: ${{ runner.os }}-vcpkg
+    - name: Bootstrap vcpkg
+      run: ${{ bootstrap }}
+      working-directory: ./vcpkg
+    - name: Build libraries
+      run: ./vcpkg/${{ vcpkg }} install
