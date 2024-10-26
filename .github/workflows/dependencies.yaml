@@ -41,17 +41,17 @@ jobs:
           path: ${{ matrix.cache_dir }}
           key: ${{ runner.os }}-vcpkg
       - name: Bootstrap vcpkg
-        run: ${{ bootstrap }}
+        run: ${{ matrix.bootstrap }}
         working-directory: ./vcpkg
       - name: Build libraries
-        run: ./vcpkg/${{ vcpkg }} install
+        run: ./vcpkg/${{ matrix.vcpkg }} install
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           path: |
-            ${{ vcpkg_bin }}/graphqlservice*
-            ${{ vcpkg_bin }}/graphqlpeg*
-            ${{ vcpkg_bin }}/graphqljson*
-            ${{ vcpkg_bin }}/graphqlresponse*
-            ${{ vcpkg_bin }}/zlib*
-            ${{ vcpkg_bin }}/uv*
+            ${{ matrix.vcpkg_bin }}/graphqlservice*
+            ${{ matrix.vcpkg_bin }}/graphqlpeg*
+            ${{ matrix.vcpkg_bin }}/graphqljson*
+            ${{ matrix.vcpkg_bin }}/graphqlresponse*
+            ${{ matrix.vcpkg_bin }}/zlib*
+            ${{ matrix.vcpkg_bin }}/uv*
