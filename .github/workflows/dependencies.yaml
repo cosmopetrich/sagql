@@ -54,8 +54,7 @@ jobs:
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}
         working-directory: vcpkg
-      - run: ls vcpkg
-      - run: ls vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin
+      - run: ls -R vcpkg/vcpkg_installed/
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
