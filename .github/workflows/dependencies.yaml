@@ -78,7 +78,7 @@ jobs:
           path: vcpkg/vcpkg_installed/${{ matrix.triplet }}/${{ matrix.artifacts }}
           if-no-files-found: error
       - name: Upload schemagen
-        if: ${{ artifacts-schemagen }}
+        if: ${{ matrix.artifacts-schemagen }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.triplet }}-${{ matrix.schemagen }}
