@@ -28,6 +28,7 @@ jobs:
           - target: Win64
             triplet: x64-windows
             os: windows-latest
+            schemagen-triplet: x64-windows-static
             vcpkg: vcpkg.exe
             vcpkg-bootstrap: bootstrap-vcpkg.bat
             artifacts-lib: bin/*.dll
@@ -61,9 +62,9 @@ jobs:
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}
         working-directory: vcpkg
       - name: Build libraries (static)
+        if: ${{ matrix.schemagen-triplet }}
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}-static
         working-directory: vcpkg
-      - run: ls vcpkg/vcpkg_installed/${{ matrix.triplet }}/tools
       - name: Upload libraries
         uses: actions/upload-artifact@v4
         with:
@@ -77,8 +78,9 @@ jobs:
           path: vcpkg/vcpkg_installed/${{ matrix.triplet }}/${{ matrix.artifacts }}
           if-no-files-found: error
       - name: Upload schemagen
+        if: ${{ artifacts-schemagen }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.triplet}}-${{ matrix.schemagen }}
-          path: vcpkg/vcpkg_installed/${{ matrix.triplet }}-static/tools/cppgraphqlgen/${{ matrix.schemagen }}
+          name: ${{ matrix.triplet }}-${{ matrix.schemagen }}
+          path: vcpkg/vcpkg_installed/${{ matrix.schemagen-triplet || matrix.triplet }}/tools/cppgraphqlgen/${{ matrix.schemagen }}
           if-no-files-found: error
