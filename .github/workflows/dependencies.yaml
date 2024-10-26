@@ -54,10 +54,10 @@ jobs:
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}
         working-directory: vcpkg
-      - run: ls -R vcpkg/vcpkg_installed/debug
-      - run: ls -R vcpkg/vcpkg_installed/lib
-      - run: ls -R vcpkg/vcpkg_installed/share
-      - run: ls -R vcpkg/vcpkg_installed/tools
+      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}debug
+      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}lib
+      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}share
+      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}tools
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
