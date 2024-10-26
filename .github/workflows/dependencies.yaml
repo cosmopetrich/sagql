@@ -15,12 +15,10 @@ jobs:
         target: [x64-windows]
         include:
           # - target: x64-linux
-          #   cache_dir: "$HOME/.cache/vcpkg/archives"
           #   os: ubuntu-latest
           #   vcpkg: vcpkg
           #   vcpkg_bin: installed/x64-linux/bin
           - target: x64-windows
-            cache_dir: "%LOCALAPPDATA%\vcpkg\archives"
             os: windows-latest
             vcpkg: vcpkg.exe
             vcpkg_bin: vcpkg\installed\x64-windows\bin
@@ -42,21 +40,22 @@ jobs:
       - name: Maintain binary cache
         uses: actions/cache@v4
         with:
-          path: ${{ matrix.cache_dir }}
+          path: binarysource
           key: vcpkg-${{ runner.target }}
       - name: Bootstrap vcpkg
         run: bootstrap-vcpkg
         working-directory: vcpkg
+      - run: ls vcpkg/installed/${{ matrix.target }}
       - name: Build libraries
-        run: ${{ matrix.vcpkg }} install
+        run: ${{ matrix.vcpkg }} install --binarysource ../binarysource --triplet ${{ matrix.target }}
         working-directory: vcpkg
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           path: |
-            ${{ matrix.vcpkg_bin }}/graphqlservice*
-            ${{ matrix.vcpkg_bin }}/graphqlpeg*
-            ${{ matrix.vcpkg_bin }}/graphqljson*
-            ${{ matrix.vcpkg_bin }}/graphqlresponse*
-            ${{ matrix.vcpkg_bin }}/zlib*
-            ${{ matrix.vcpkg_bin }}/uv*
+            vcpkg/installed/${{ matrix.target }}/graphqlservice*
+            vcpkg/installed/${{ matrix.target }}/graphqlpeg*
+            vcpkg/installed/${{ matrix.target }}/graphqljson*
+            vcpkg/installed/${{ matrix.target }}/graphqlresponse*
+            vcpkg/installed/${{ matrix.target }}/zlib*
+            vcpkg/installed/${{ matrix.target }}/uv*
