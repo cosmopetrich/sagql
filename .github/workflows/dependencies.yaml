@@ -47,7 +47,7 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - name: Bootstrap vcpkg
-        run: ${{ vcpkg_bootstrap }}
+        run: ${{ matrix.vcpkg_bootstrap }}
         working-directory: vcpkg
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.target }}
