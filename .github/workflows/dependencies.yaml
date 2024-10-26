@@ -20,11 +20,11 @@ jobs:
           - target: x64-linux
             os: ubuntu-latest
             vcpkg: vcpkg
-            vcpkg_bin: installed/x64-linux/bin
+            vcpkg_bootstrap: bootstrap-vcpkg.sh
           - target: x64-windows
             os: windows-latest
             vcpkg: vcpkg.exe
-            vcpkg_bin: vcpkg\installed\x64-windows\bin
+            vcpkg_bootstrap: bootstrap-vcpkg.ps1
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout vcpkg
@@ -47,7 +47,7 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - name: Bootstrap vcpkg
-        run: bootstrap-vcpkg
+        run: ${{ vcpkg_bootstrap }}
         working-directory: vcpkg
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.target }}
