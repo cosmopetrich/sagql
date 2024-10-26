@@ -22,11 +22,33 @@ jobs:
             os: ubuntu-latest
             vcpkg: vcpkg
             vcpkg_bootstrap: ./bootstrap-vcpkg.sh
+            artifacts: |
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libgraphqlservice.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libgraphqlpeg.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libgraphqljson.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libgraphqlresponse.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libuSockets.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libz.a
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/lib/libuv.a
           - target: Win64
             triplet: x64-windows
             os: windows-latest
             vcpkg: vcpkg.exe
             vcpkg_bootstrap: bootstrap-vcpkg.bat
+            artifacts: |
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlservice.dll
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlpeg.dll
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqljson.dll
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlresponse.dll
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/zlib1.dll
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/uv.dll
+            artifacts_debug: |
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlservice.*
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlpeg.*
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqljson.*
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlresponse.*
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/zlib.*
+              vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/uv.*
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout vcpkg
@@ -51,21 +73,22 @@ jobs:
       - name: Bootstrap vcpkg
         run: ${{ matrix.vcpkg_bootstrap }}
         working-directory: vcpkg
-      - name: Build libraries
+      - name: Build libraries (dynamic)
         run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}
         working-directory: vcpkg
-      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}/debug
-      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}/lib
-      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}/share
-      - run: ls -R vcpkg/vcpkg_installed/${{matrix.triplet}}/tools
-      - uses: actions/upload-artifact@v4
+      - name: Build libraries (static)
+        run: ${{ matrix.vcpkg }} install --triplet ${{ matrix.triplet }}-static
+        working-directory: vcpkg
+      - run: ls vcpkg/vcpkg_installed/${{ matrix.triplet }}/tools
+      - name: Upload libraries
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
+          path: ${{ matrix.artifacts }}
           if-no-files-found: error
-          path: |
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlservice*
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlpeg*
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqljson*
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/graphqlresponse*
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/zlib*
-            vcpkg/vcpkg_installed/${{ matrix.triplet }}/bin/uv*
+      - name: Upload debug libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-debug
+          path: ${{ matrix.artifacts_debug }}
+          if-no-files-found: error
