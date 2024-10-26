@@ -44,7 +44,7 @@ jobs:
           key: ${{ runner.os }}-vcpkg
       - name: Bootstrap vcpkg
         run: ${{ matrix.bootstrap }}
-        working-directory: vcpkg
+        working-directory: ${{ GITHUB_WORKSPACE }}\vcpkg
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install
         working-directory: vcpkg
