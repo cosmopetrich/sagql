@@ -21,7 +21,7 @@ jobs:
           #   vcpkg: vcpkg
           #   vcpkg_bin: installed/x64-linux/bin
           - target: x64-windows
-            bootstrap: .\bootstrap-vcpkg.ps1
+            bootstrap: bootstrap-vcpkg
             cache_dir: "%LOCALAPPDATA%\vcpkg\archives"
             os: windows-latest
             vcpkg: .\vcpkg.exe
@@ -44,7 +44,7 @@ jobs:
           key: ${{ runner.os }}-vcpkg
       - name: Bootstrap vcpkg
         run: ${{ matrix.bootstrap }}
-        working-directory: ${{ GITHUB_WORKSPACE }}\vcpkg
+        working-directory: vpckg
       - name: Build libraries
         run: ${{ matrix.vcpkg }} install
         working-directory: vcpkg
