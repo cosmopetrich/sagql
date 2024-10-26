@@ -1,6 +1,7 @@
 name: Build dependencies
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "master" ]
     paths: vcpkg.json
