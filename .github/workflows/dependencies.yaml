@@ -20,11 +20,11 @@ jobs:
           - target: x64-linux
             os: ubuntu-latest
             vcpkg: vcpkg
-            vcpkg_bootstrap: bootstrap-vcpkg.sh
+            vcpkg_bootstrap: ./bootstrap-vcpkg.sh
           - target: x64-windows
             os: windows-latest
             vcpkg: vcpkg.exe
-            vcpkg_bootstrap: bootstrap-vcpkg.ps1
+            vcpkg_bootstrap: bootstrap-vcpkg.bat
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout vcpkg
