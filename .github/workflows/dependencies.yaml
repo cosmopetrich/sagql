@@ -8,50 +8,50 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
         include:
+          # - os: ubuntu-latest
+          #   bootstrap: bootstrap-vcpkg.sh
+          #   cache_dir: "$HOME/.cache/vcpkg/archives"
+          #   vcpkg: vcpkg
+          #   vcpkg_bin: installed/x64-linux/bin
           - os: windows-latest
             bootstrap: bootstrap-vcpkg.ps1
             cache_dir: "%LOCALAPPDATA%\vcpkg\archives"
             vcpkg: vcpkg.exe
             vcpkg_bin: installed/x64-windows/bin
-          - os: ubuntu-latest
-            bootstrap: bootstrap-vcpkg.sh
-            cache_dir: "$HOME/.cache/vcpkg/archives"
-            vcpkg: vcpkg
-            vcpkg_bin: installed/x64-linux/bin
+    runs-on: ${{ matrix.os }}
     steps:
-    - name: Checkout vcpkg
-      uses: actions/checkout@v4
-      with:
-        path: vcpkg
-        repository: microsoft/vcpkg
-    - name: Checkout vpckg.json
-      uses: actions/checkout@v4
-      with:
-        sparse-checkout: vcpkg.json
-    - name: Maintain binary cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ matrix.cache_dir }}
-        key: ${{ runner.os }}-vcpkg
-    - name: Bootstrap vcpkg
-      run: ${{ bootstrap }}
-      working-directory: ./vcpkg
-    - name: Build libraries
-      run: ./vcpkg/${{ vcpkg }} install
-    - uses: actions/upload-artifact@v4
-      with:
-        if-no-files-found: error
-        overwrite: true
-        path: |
-          ${{ vcpkg_bin }}/graphqlservice*
-          ${{ vcpkg_bin }}/graphqlpeg*
-          ${{ vcpkg_bin }}/graphqljson*
-          ${{ vcpkg_bin }}/graphqlresponse*
-          ${{ vcpkg_bin }}/zlib*
-          ${{ vcpkg_bin }}/uv*
+      - name: Checkout vcpkg
+        uses: actions/checkout@v4
+        with:
+          path: vcpkg
+          repository: microsoft/vcpkg
+      - name: Checkout vpckg.json
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: vcpkg.json
+      - name: Maintain binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.cache_dir }}
+          key: ${{ runner.os }}-vcpkg
+      - name: Bootstrap vcpkg
+        run: ${{ bootstrap }}
+        working-directory: ./vcpkg
+      - name: Build libraries
+        run: ./vcpkg/${{ vcpkg }} install
+      - uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          path: |
+            ${{ vcpkg_bin }}/graphqlservice*
+            ${{ vcpkg_bin }}/graphqlpeg*
+            ${{ vcpkg_bin }}/graphqljson*
+            ${{ vcpkg_bin }}/graphqlresponse*
+            ${{ vcpkg_bin }}/zlib*
+            ${{ vcpkg_bin }}/uv*
