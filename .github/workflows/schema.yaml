@@ -1,0 +1,72 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Build schema
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: API/src
+  pull_request:
+    branches: [ "master" ]
+    paths: API/src
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: API/
+    - name: Setup Nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: npm
+        cache-dependency-path: API/package-lock.json
+    - name: Generate GraphQL schema
+      run: npm schema-gen
+      working-directory: API
+    - name: Upload GraphQL schema
+      uses: actions/upload-artifact@v4
+      with:
+        name: sagql.schema.gql
+        path: API/dist/sagql.schema.gql
+        if-no-files-found: error
+    - name: Find latest run of dependencies build
+      run: .github/workflows/get-run-id
+      env:
+        GH_BRANCH: master
+        GH_EVENTS: push workflow_dispatch
+        GH_OUTPUT_VAR: DEPENDENCIES_RUN
+        GH_REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ github.token }}
+        GH_WORKFLOW: dependencies.yaml
+    - name: Install schemagen
+      uses: actions/download-artifact@v4
+      with:
+        name: schemagen-x86_64-Linux
+        path: foo
+        github-token: ${{ github.token }}
+        run-id: ${{ env.DEPENDENCIES_RUN }}
+    - run: ls
+    - run: ls foo
+    - uses: actions/download-artifact@v4
+    - name: Create output directories
+      run: mkdir -p dist/cpp-schema dist/cpp-schema-stubs
+    - name: Generate C++ schema
+      run: schemagen API/dist/sagql.schema.gql SAGQL SAGQL
+      working-directory: dist/cpp-schema
+    - name: Upload C++ schema
+      uses: actions/upload-artifact@v4
+      with:
+        name: cpp-schema
+        path: API/dist/cpp-schema/*
+        if-no-files-found: error
+    - name: Upload C++ schema (stubs)
+      uses: actions/upload-artifact@v4
+      with:
+        name: cpp-schema-stubs
+        path: API/dist/cpp-schema-stubs/*
+        if-no-files-found: error
